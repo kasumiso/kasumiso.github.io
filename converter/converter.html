@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<title>テキスト変換</title>
+</head>
+
+<body>
+	<form name="fm">
+		ファイル選択<br>
+		<input type="file" id="myfile" accept=".txt,.ks"><br>
+	</form>
+	<div id="result">
+		
+	</div>
+	<a id="download" href="#" download="test.txt" onclick="handleDownload()">ダウンロード</a>
+
+	<script>
+		var selectfile=document.getElementById("myfile");
+		selectfile.addEventListener("change",function(evt){
+			var file=evt.target.files;
+			var reader=new FileReader();
+			var chName="",chName2="";//キャラ名保存用
+			var word=[];//ワード数カウント用 0ワード数　1文字数 2ファイル名
+			var result="";//結果表示用
+			var txt="";//変換したテキスト用
+			var fileName="";//ファイル名
+			var voice=false;
+			reader.readAsText(file[0]);
+			reader.onload=function(){
+				for(var i=0;i<reader.result.length;i++){
+					switch(reader.result[i]){
+						case "$":
+							chName="";
+							chName2="";
+							txt+=reader.result[i];
+							i++;
+							while(reader.result[i]!='/'){
+								chName+=reader.result[i];
+								txt+=reader.result[i];
+								i++;
+							}
+							txt+=reader.result[i];
+							i++;
+							while(reader.result[i]!='\n' && reader.result[i]!='\r' 
+								&& reader.result[i]!='\r\n' && reader.result[i]){
+								chName2+=reader.result[i];
+								txt+=reader.result[i];
+								i++;
+							}
+							i--;
+							word[chName]=[];
+							word[chName][0]=0;
+							word[chName][1]=0;
+							word[chName][2]=chName2;
+							break;
+						case "#":
+							txt+=reader.result[i];
+							i++;
+							while(reader.result[i]!='\n' && reader.result[i]!='\r' 
+								&& reader.result[i]!='\r\n' && reader.result[i]){
+								fileName+=reader.result[i];
+								txt+=reader.result[i];
+								i++;
+							}
+							i--;
+							break;
+						case "/":
+							while(reader.result[i]!='\n' && reader.result[i]!='\r' 
+							&& reader.result[i]!='\r\n' && reader.result[i]){
+								txt+=reader.result[i];
+								i++;
+							}
+							i--;
+							break;
+						case "[":
+							i++;
+							while(reader.result[i]!="]"){
+								if(reader.result[i]=="■" || reader.result[i]=="□"){
+									i--;
+									break;
+								}else{
+									i++;
+								}
+							}
+							break;
+						case "□":
+							txt+=reader.result[i];
+							i++;
+							var stopper=0;
+							while(reader.result[i]!='\n' && reader.result[i]!='\r' 
+								&& reader.result[i]!='\r\n' && reader.result[i]){
+								if(reader.result[i]=='\"' || reader.result[i]==' '){
+									//名前の最後まで来たので]まで飛ばす
+									while(reader.result[i]!="]"){
+										i++;
+									}
+									i++;
+									break;
+								}else if(reader.result[i]==']'){
+									i++;
+									break;
+								}
+								txt+=reader.result[i];
+								stopper++;
+								if(stopper>10)break;
+								i++;
+							}
+							i--;
+							voice=false;
+							break;
+						case "■":
+							chName="";
+							txt+=reader.result[i];
+							i++;
+							var stopper=0;
+							while(reader.result[i]!='\n' && reader.result[i]!='\r' 
+								&& reader.result[i]!='\r\n' && reader.result[i]){
+								if(reader.result[i]=='\"' || reader.result[i]==' '){
+									//名前の最後まで来たので]まで飛ばす
+									while(reader.result[i]!="]"){
+										i++;
+									}
+									i++;
+									break;
+								}else if(reader.result[i]==']'){
+									i++;
+									break;
+								}
+								chName+=reader.result[i];
+								txt+=reader.result[i];
+								stopper++;
+								if(stopper>10)break;
+								i++;
+							}
+							i--;
+							if(!word[chName]){
+								word[chName]=[];
+								word[chName][0]=0;
+								word[chName][1]=0;
+								word[chName][2]="入力エラー";
+							}
+							word[chName][0]++;
+							//名前の後ろにファイル番号を入れる
+							txt+="\t"+fileName+word[chName][2]+word[chName][0];
+							voice=true;
+							break;
+						case "「":
+							txt+=reader.result[i];
+							i++;
+							while(reader.result[i]!="」"){
+								txt+=reader.result[i];
+								if(voice){
+									if(reader.result[i]!="　" && reader.result[i]!=" " && reader.result[i]!='\n'
+										&& reader.result[i]!='\r' && reader.result[i]!='\r\n'){//全角スペース、半角スペース 改行文字
+										word[chName][1]++;
+									}
+								}
+								i++;
+							}
+							txt+=reader.result[i];
+							voice=false;
+							break;
+						case "（":
+							txt+=reader.result[i];
+							i++;
+							while(reader.result[i]!="）"){
+								txt+=reader.result[i];
+								if(voice){
+									if(reader.result[i]!="　" && reader.result[i]!=" " && reader.result[i]!='\n'
+										&& reader.result[i]!='\r' && reader.result[i]!='\r\n'){//全角スペース、半角スペース
+										word[chName][1]++;
+									}
+								}
+								i++;
+							}
+							txt+=reader.result[i];
+							voice=false;
+							break;
+						default:
+							txt+=reader.result[i];
+							break;
+					}
+				}
+				for(key in word){
+					result+=key+"：\t"+word[key][0]+"ワード,"+word[key][1]+"文字<br>";
+				}
+				document.getElementById("result").innerHTML=result;
+				
+				var blob=new Blob([txt],{"type":"text/plain"});
+				if (window.navigator.msSaveBlob) { 
+					window.navigator.msSaveBlob(blob, "test.txt"); 
+					// msSaveOrOpenBlobの場合はファイルを保存せずに開ける
+					window.navigator.msSaveOrOpenBlob(blob, "test.txt"); 
+				} else {
+					document.getElementById("download").href=window.URL.createObjectURL(blob);
+                }
+			}
+		},false);
+	</script>
+</body>
+
+</html>
+
+<!-- 
+名前は　”　か　改行コードまでを名前とする
+[]とその中身を削除する
+台詞に番号を振る
+ワード数と文字数を数える
+コメント//は無視する
+↓よくわからん
+https://teratail.com/questions/65064
+-->
