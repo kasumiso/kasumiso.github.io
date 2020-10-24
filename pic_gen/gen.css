@@ -1,0 +1,171 @@
+html{
+	height:100%;
+	padding:0;
+	margin:0;
+}
+body{
+	background-image:url("img/bg2.png");
+	height:100%;
+	padding:0;
+	margin:0;
+}
+#bg{
+	width:800px;
+	padding-bottom:60px;
+	margin:auto;
+	background-image:url("img/bg3.png");
+}
+#header{
+	width:800px;
+	height:auto;
+}
+#main{
+	
+}
+#winBg{
+	background-color:white;
+	width:320px;
+	padding:8px;
+	border-radius:0 8px 8px 8px;
+	border:solid 3px blue;
+}
+#cvsWrapper{
+	background-image:url("img/bg.png");
+	width:224px;
+	height:224px;
+	margin:auto;
+}
+#cvs{
+	width:224px;
+	height:224px;
+	cursor:default;
+}
+#msg1{
+	writing-mode:vertical-rl;
+	text-align:center;
+	padding:4px;
+	margin-left:10px;
+}
+.cmd{
+	text-align:center;
+	display:block;
+	margin:auto;
+	padding:6px;
+	background-color:blue;
+	font-size:14px;
+	cursor:pointer;
+	border-radius:6px;
+	color:white;
+}
+.cmd:hover{
+	background-color:skyblue;
+}
+.gridBtn{
+	padding:0 5px;
+	text-align:center;
+	cursor:pointer;
+}
+.snapBtn{
+	padding:0 5px;
+	text-align:center;
+	cursor:pointer;
+}
+.objBtn{
+	padding:0 5px;
+	text-align:center;
+	cursor:pointer;
+}
+.fcsBtn{
+	padding:0 5px;
+	text-align:center;
+	cursor:pointer;
+}
+.selected{
+	background-color:skyblue;
+	border-radius:8px;
+	color:white;
+}
+.option{
+	font-size:14px;
+}
+
+/*	メニュー	*/
+#menuWin{
+	background-color:white;
+	width:350px;
+	height:520px;
+	padding:8px;
+	border-radius:0 8px 8px 8px;
+	border:solid 3px blue;
+	overflow:scroll;
+	overflow-x:hidden;
+}
+.def{
+	cursor:pointer;
+}
+.view{
+	display:none;
+	cursor:pointer;
+}
+.wall{
+	display:none;
+	cursor:pointer;
+}
+.floor{
+	display:none;
+	cursor:pointer;
+}
+.acc{
+	display:none;
+	cursor:pointer;
+}
+.ch{
+	display:none;
+	cursor:pointer;
+}
+.add{
+	display:none;
+	cursor:pointer;
+}
+
+/*	その他	*/
+.tab{
+	display:flex;
+	flex-wrap:wrap;
+}
+.layTab{
+	display:block;
+	padding:4px 9px;
+	font-size:14px;
+	color:white;
+	background-color:blue;
+	border-radius:8px 8px 0 0;
+	text-align:center;
+	cursor:pointer;
+	border:solid 3px blue;
+	border-bottom:none;
+}
+
+.flexbox{
+	display:flex;
+	flex-wrap:wrap;
+	justify-content:space-around;
+}
+
+#caution{
+	width:90%;
+	margin:auto;
+	padding:20px;
+	border-radius:10px;
+	background-color:rgba(255,255,255,0.8);
+	font-size:14px;
+}
+.cmenu{
+	background-color:skyblue;
+	font-size:20px;
+}
+
+
+
+
+

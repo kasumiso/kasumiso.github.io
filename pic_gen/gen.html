@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="gen.css" type="text/css">
+</head>
+
+<body style="margin:0">
+
+	<div id="bg">
+		<img id="header" src="img/header.png">
+		<div id="gen" class="flexbox" style="margin:32px;">
+			<div id="main">
+				<div class="tab">
+					<span class="layTab" id="ley0" onclick=LayChange(0) style="background-color:skyblue;">景色</span>
+					<span class="layTab" id="ley1" onclick=LayChange(1)>床</span>
+					<span class="layTab" id="ley2" onclick=LayChange(2)>壁</span>
+					<span class="layTab" id="ley3" onclick=LayChange(3)>lay1</span>
+					<span class="layTab" id="ley4" onclick=LayChange(4)>lay2</span>
+					<span class="layTab" id="ley5" onclick=LayChange(5)>lay3</span>
+				</div>
+				<div id="winBg" class="flexbox">
+					<div id="cvsWrapper">
+						<canvas id="cvs" width=224 height=224>
+							canvas非対応のブラウザです。このページはChromeからの利用を推奨しております。
+						</canvas>
+					</div>
+					<div>
+						<font size=2 id="msg1">選択中のレイヤー操作</font>
+						<span class="cmd" style="margin-top:5px;" onclick=RestoreLay()>戻る</span>
+						<span class="cmd" style="margin-top:5px;" onclick=ClearLay()>クリア</span>
+					</div>
+				</div>
+				
+				<div style="margin:15px 0;" class="option">
+					グリッドの表示(px)：
+					<span class="gridBtn" id="grid8" onclick=GridSet(8)>8</span>
+					<span class="gridBtn" id="grid16" onclick=GridSet(16)>16</span>
+					<span class="gridBtn" id="grid32" onclick=GridSet(32)>32</span>
+					<span class="gridBtn selected" id="grid0" onclick=GridSet(0)>なし</span>
+				</div>
+				<div style="margin-bottom:15px;" class="option">
+					スナップの単位(px)：
+					<span class="snapBtn" id="snap4" onclick=SnapSet(4)>4</span>
+					<span class="snapBtn" id="snap8" onclick=SnapSet(8)>8</span>
+					<span class="snapBtn" id="snap16" onclick=SnapSet(16)>16</span>
+					<span class="snapBtn" id="snap32" onclick=SnapSet(32)>32</span>
+					<span class="snapBtn selected" id="snap0" onclick=SnapSet(0)>なし</span>
+				</div>
+				<div style="margin-bottom:15px;" class="option">
+					固有アイテム位置の表示：
+					<span class="objBtn" id="obj_fl1" onclick=objOnOffSet(1)>表示</span>
+					<span class="objBtn selected" id="obj_fl0" onclick=objOnOffSet(0)>非表示</span>
+				</div>
+				<div style="margin-bottom:15px;" class="option">
+					選択中レイヤー以外を半透明に：
+					<span class="fcsBtn" id="fcs_fl1" onclick=focusSet(1)>する</span>
+					<span class="fcsBtn selected" id="fcs_fl0" onclick=focusSet(0)>しない</span>
+				</div>
+				<div style="margin-bottom:15px;" class="option">
+					画像を素材リストに追加する：<br>
+					<input type="file" id="selectImg" accept=".png" onchange=AddImage()>
+				</div>
+				<!-- 生成ボタン !-->
+				<div style="margin-bottom:15px;" class="option">
+					<button onclick=GenerateImg()>画像を作成！</button>
+				</div>
+			</div><!-- main end !-->
+			<div id="menu">
+				<div class="tab">
+					<span class="layTab" id="def" onclick=CatChange("def") style="background-color:skyblue;">デフォ</span>
+					<span class="layTab" id="view" onclick=CatChange("view")>景色</span>
+					<span class="layTab" id="wall" onclick=CatChange("wall")>壁</span>
+					<span class="layTab" id="floor" onclick=CatChange("floor")>床</span>
+					<span class="layTab" id="acc" onclick=CatChange("acc")>小物</span>
+					<span class="layTab" id="ch" onclick=CatChange("ch")>キャラ</span>
+					<span class="layTab" id="add" onclick=CatChange("add")>追加</span>
+				</div>
+				<div id="menuWin">
+					<!-- デフォルト !-->
+					<div class="def">
+						<font size=2>景色レイヤーに画像を描画します。</font><br>
+						<font size=2>-日常の庭-</font><br>
+						<img src="img/def/def01.png" onclick=DefSet("img/def/def01.png")><br>
+						<font size=2>展望の間・花火</font><br>
+						<img src="img/def/def02.png" onclick=DefSet("img/def/def02.png")><br>
+						<font size=2>-本丸博2020-</font><br>
+						<img src="img/def/def03.png" onclick=DefSet("img/def/def03.png")>
+					</div>
+					<!-- 景色 !-->
+					<div class="view">
+						<font size=2>景色レイヤーに画像を描画します。</font><br>
+						<img src="img/view/view01.png" onclick=BgSet("img/view/view01.png",0)>
+						<img src="img/view/view02.png" onclick=BgSet("img/view/view02.png",0)>
+					</div>
+					<!-- 壁 !-->
+					<div class="wall">
+						<font size=2>壁レイヤーに画像を描画します。</font><br>
+						<img src="img/wall/wall01.png" onclick=BgSet("img/wall/wall01.png",2)>
+						<img src="img/wall/wall02.png" onclick=BgSet("img/wall/wall02.png",2)>
+						<img src="img/wall/wall03.png" onclick=BgSet("img/wall/wall03.png",2)>
+						<img src="img/wall/wall04.png" onclick=BgSet("img/wall/wall04.png",2)><br>
+						<font size=2>↓この壁はメッセージボードを置かない場合を想定して作られています。</font><br>
+						<img src="img/wall/niwa01.png" onclick=BgSet("img/wall/niwa01.png",2)><br>
+						<font size=2>↓この壁はメッセージボードを置かない場合を想定して作られています。</font><br>
+						<img src="img/wall/niwa01_2.png" onclick=BgSet("img/wall/niwa01_2.png",2)>
+						<img src="img/wall/niwa02.png" onclick=BgSet("img/wall/niwa02.png",2)>
+						<img src="img/wall/niwa02_2.png" onclick=BgSet("img/wall/niwa02_2.png",2)>
+					</div>
+					<!-- 床 !-->
+					<div class="floor">
+						<font size=2>床レイヤー推奨ですがどのレイヤーにも使用できます。</font><br>
+						<img src="img/floor/floor01.png" onclick=ObjClick("img/floor/floor01.png")>
+						<img src="img/floor/floor02.png" onclick=ObjClick("img/floor/floor02.png")>
+						<br>
+						<img src="img/floor/floor01_2.png" onclick=ObjClick("img/floor/floor01_2.png")>
+						<img src="img/floor/floor02_2.png" onclick=ObjClick("img/floor/floor02_2.png")>
+						<img src="img/floor/floor03.png" onclick=ObjClick("img/floor/floor03.png")>
+						<br>
+					
+						<img src="img/floor/kusa02.png" onclick=ObjClick("img/floor/kusa02.png")>
+						<img src="img/floor/kusa03.png" onclick=ObjClick("img/floor/kusa03.png")>
+						<img src="img/floor/kusa04.png" onclick=ObjClick("img/floor/kusa04.png")>
+						<br>
+						<img src="img/floor/kusa05.png" onclick=ObjClick("img/floor/kusa05.png")>
+						<img src="img/floor/tuti01.png" onclick=ObjClick("img/floor/tuti01.png")>
+						<img src="img/floor/kusa06.png" onclick=ObjClick("img/floor/kusa06.png")>
+						<br>
+						<img src="img/floor/kusa07.png" onclick=ObjClick("img/floor/kusa07.png")>
+						<img src="img/floor/kusa08.png" onclick=ObjClick("img/floor/kusa08.png")>
+						<img src="img/floor/kusa09.png" onclick=ObjClick("img/floor/kusa09.png")>
+						<br>
+						<img src="img/floor/kusa01.png" onclick=ObjClick("img/floor/kusa01.png")>
+					</div>
+					<!-- 小物 !-->
+					<div class="acc">
+						<img src="img/acc/tukue01.png" onclick=ObjClick("img/acc/tukue01.png")>
+						<img src="img/acc/tukue02.png" onclick=ObjClick("img/acc/tukue02.png")>
+						<img src="img/acc/and01.png" onclick=ObjClick("img/acc/and01.png")><br>
+						
+						<img src="img/acc/kake01.png" onclick=ObjClick("img/acc/kake01.png")>
+						<img src="img/acc/kake02.png" onclick=ObjClick("img/acc/kake02.png")>
+						<img src="img/acc/kake03.png" onclick=ObjClick("img/acc/kake03.png")>
+						
+						<img src="img/acc/maru01.png" onclick=ObjClick("img/acc/maru01.png")>
+						<img src="img/acc/maru02.png" onclick=ObjClick("img/acc/maru02.png")>
+						<img src="img/acc/maru03.png" onclick=ObjClick("img/acc/maru03.png")>
+						<img src="img/acc/maru04.png" onclick=ObjClick("img/acc/maru04.png")>
+						<img src="img/acc/maru05.png" onclick=ObjClick("img/acc/maru05.png")><br>
+						
+						<img src="img/acc/kab01.png" onclick=ObjClick("img/acc/kab01.png")>
+						<img src="img/acc/kab02.png" onclick=ObjClick("img/acc/kab02.png")>
+						<img src="img/acc/kabF01.png" onclick=ObjClick("img/acc/kabF01.png")>
+						<img src="img/acc/kabF02.png" onclick=ObjClick("img/acc/kabF02.png")>
+						<img src="img/acc/kabF03.png" onclick=ObjClick("img/acc/kabF03.png")>
+						<img src="img/acc/kabF04.png" onclick=ObjClick("img/acc/kabF04.png")>
+						
+						<br>
+						<img src="img/acc/ishi.png" onclick=ObjClick("img/acc/ishi.png")>
+						<img src="img/acc/sisi.png" onclick=ObjClick("img/acc/sisi.png")>
+						<img src="img/acc/hig01.png" onclick=ObjClick("img/acc/hig01.png")>
+						<img src="img/acc/hig02.png" onclick=ObjClick("img/acc/hig02.png")>
+						<img src="img/acc/him01.png" onclick=ObjClick("img/acc/him01.png")>
+						<img src="img/acc/him02.png" onclick=ObjClick("img/acc/him02.png")>
+						<img src="img/acc/rin01.png" onclick=ObjClick("img/acc/rin01.png")>
+						<img src="img/acc/rin02.png" onclick=ObjClick("img/acc/rin02.png")>
+						
+						<img src="img/acc/kiku01.png" onclick=ObjClick("img/acc/kiku01.png")>
+						<img src="img/acc/kiku02.png" onclick=ObjClick("img/acc/kiku02.png")>
+						<img src="img/acc/kiku03.png" onclick=ObjClick("img/acc/kiku03.png")>
+						
+						<img src="img/acc/hati01.png" onclick=ObjClick("img/acc/hati01.png")>
+						<img src="img/acc/oki01.png" onclick=ObjClick("img/acc/oki01.png")>
+					</div>
+					<!-- キャラ !-->
+					<div class="ch">
+						<font size=2>
+							時間が足りず全員いません。少しずつ足していく予定なので推しがいなかった審神者さんはもうしばらくお待ちください。
+						</font><br><br>
+						<font size=2>-跪坐-</font><br>
+						<img src="img/ch/ch_mik.png" onclick=ObjClick("img/ch/ch_mik.png")><!-- 3 !-->
+						<img src="img/ch/ch_kog.png" onclick=ObjClick("img/ch/ch_kog.png")><!-- 5 !-->
+						<img src="img/ch/ch_isi.png" onclick=ObjClick("img/ch/ch_isi.png")><!-- 7 !-->
+						<img src="img/ch/ch01.png" onclick=ObjClick("img/ch/ch01.png")><!-- 11 !-->
+						<img src="img/ch/ch_ood.png" onclick=ObjClick("img/ch/ch_ood.png")><!-- 13 !-->
+						<img src="img/ch/ch_nik.png" onclick=ObjClick("img/ch/ch_nik.png")><!-- 19 !-->
+						<img src="img/ch/ch_ichi.png" onclick=ObjClick("img/ch/ch_ichi.png")><!-- 25 !-->
+						<img src="img/ch/ch_nam.png" onclick=ObjClick("img/ch/ch_nam.png")><!-- 27 !-->
+						<img src="img/ch/ch02.png" onclick=ObjClick("img/ch/ch02.png")><!-- 31 !-->
+						<img src="img/ch/ch03.png" onclick=ObjClick("img/ch/ch03.png")><!-- 33 !-->
+						<img src="img/ch/ch04.png" onclick=ObjClick("img/ch/ch04.png")><!-- 39 !-->
+						<img src="img/ch/ch05.png" onclick=ObjClick("img/ch/ch05.png")><!-- 41 !-->
+						<img src="img/ch/ch06.png" onclick=ObjClick("img/ch/ch06.png")><!-- 45 !-->
+						<img src="img/ch/ch_yag.png" onclick=ObjClick("img/ch/ch_yag.png")><!-- 49 !-->
+						
+						<img src="img/ch/ch_kasyu.png" onclick=ObjClick("img/ch/ch_kasyu.png")><!-- 85 !-->
+						<img src="img/ch/ch_kase.png" onclick=ObjClick("img/ch/ch_kase.png")><!-- 89 !-->
+						<img src="img/ch/ch_mutu.png" onclick=ObjClick("img/ch/ch_mutu.png")><!-- 93 !-->
+						<img src="img/ch/ch_mnb.png" onclick=ObjClick("img/ch/ch_mnb.png")><!-- 95 !-->
+						<img src="img/ch/ch_hachi.png" onclick=ObjClick("img/ch/ch_hachi.png")><!-- 101 !-->
+						<img src="img/ch/ch_turu.png" onclick=ObjClick("img/ch/ch_turu.png")><!-- 130 !-->
+						<img src="img/ch/ch_hige.png" onclick=ObjClick("img/ch/ch_hige.png")><!-- 107 !-->
+						<img src="img/ch/ch_hiza.png" onclick=ObjClick("img/ch/ch_hiza.png")><!-- 112 !-->
+					</div>
+					<!-- 追加 !-->
+					<div class="add" id="addImg">
+						<font size=2>PCに保存している画像を素材として追加できます。</font><br>
+					</div>
+					
+				</div>
+			</div>
+		</div><!-- flex end !-->
+		
+		<div id="caution">
+			<p class="cmenu">--- 利用規約　---</p><br>
+			このジェネレーターで作った画像はピクスク上で開かれる刀剣乱舞のオンリーで自由に使用することが出来ます。<br>
+			ただし、下記の事はご遠慮ください。<br>
+			<br>
+			・二次配布（無断配布）<br>
+			・自作発言<br>
+			<br>
+			要望やバグ報告・その他何かあれば<a href="https://twitter.com/_kasumi_so_">Twitter</a>までお願いします。<br>
+			<br>
+			<p size=5 class="cmenu">--- ジェネレーターの使い方　---</p><br>
+			※このジェネレーターはPC専用です。スマホからはご利用になれません※<br>
+			※ブラウザはクローム推奨・IEサポート対象外です。※<br>
+			※また、Macを持っていないのでsafariも対象外になります。※<br>
+			<br>
+			
+			<font size=4>本丸ウィンドウ（左）</font><br>
+			このウィンドウは6枚のレイヤーで出来ています。<br>
+			タブをクリックするとレイヤーを切り替えられます。<br>
+			素材は選択中のレイヤーの上に配置されるので、置く素材の種類によってレイヤーを使い分けて下さい。<br>
+			<br>
+			
+			<font size=4>素材ウィンドウ（右）</font><br>
+			このウィンドウには素材が種類別に表示されています。<br>
+			配置したい素材をクリックすると選択状態になり、本丸ウィンドウのレイヤー上で再度クリックすると選択していた素材が配置されます。<br>
+			素材は好きなレイヤーに配置出来ますが、下記の素材のみ特定のレイヤーに固定で配置されます。<br>
+			<br>
+			・デフォ、および景色素材→景色レイヤー<br>
+			・壁→壁レイヤー<br>
+			<br>
+			
+			<font size=4>自前の画像を読み込んで素材に追加する</font><br>
+			『画像を素材リストに追加する：』の下にある『ファイルを選択』ボタンを押すとPC上に保存された画像を選択し、素材ウィンドウの『追加』タブに追加することが出来ます。<br>
+			追加された素材は他の素材同様好きなレイヤーに配置することが出来ます。<br>
+			<br>
+			
+			<font size=4>画像を生成して保存する</font><br>
+			『画像を作成』ボタンを押すと本丸ウィンドウの画像がpngで生成され自動でダウンロードされます。<br>
+			
+		</div>
+	</div><!-- bg end !-->
+	
+	
+	
+	<script>
+		var bps=10;
+		var lay_no=0;
+		var category="def";
+		var grid=0;
+		var snap=0;
+		var objOnOff=0;
+		var focus=0;
+		var layObj=[];
+			layObj[0]=[];
+			layObj[1]=[];
+			layObj[2]=[];
+			layObj[3]=[];
+			layObj[4]=[];
+			layObj[5]=[];
+		var layObj_old=[];
+			layObj_old[0]=[];
+			layObj_old[1]=[];
+			layObj_old[2]=[];
+			layObj_old[3]=[];
+			layObj_old[4]=[];
+			layObj_old[5]=[];
+		var cvs=document.getElementById("cvs");
+		var ctx=cvs.getContext('2d');
+			ctx.strokeStyle="#666";
+			ctx.lineWidth=1;
+		
+		var clickImg=new Image();
+		var xy=[-1,-1];
+		
+		function GridSet(grid_size){
+			document.getElementById("grid"+grid).className="gridBtn";
+			document.getElementById("grid"+grid_size).className="gridBtn selected";
+			grid=grid_size;
+			Draw();
+		}
+		function SnapSet(snap_size){
+			document.getElementById("snap"+snap).className="snapBtn";
+			document.getElementById("snap"+snap_size).className="snapBtn selected";
+			snap=snap_size;
+		}
+		function objOnOffSet(objOn_fl){
+			document.getElementById("obj_fl"+objOnOff).className="objBtn";
+			document.getElementById("obj_fl"+objOn_fl).className="objBtn selected";
+			objOnOff=objOn_fl;
+			Draw();
+		}
+		function focusSet(focus_fl){
+			document.getElementById("fcs_fl"+focus).className="fcsBtn";
+			document.getElementById("fcs_fl"+focus_fl).className="fcsBtn selected";
+			focus=focus_fl;
+			Draw();
+		}
+			
+		function LayChange(cange_leyno){
+			for(var i=0;i<layObj.length;i++){
+				document.getElementById("ley"+i).style.backgroundColor="blue";
+			}
+			document.getElementById("ley"+cange_leyno).style.backgroundColor="skyblue";
+			lay_no=cange_leyno;
+			Draw();
+		}
+		
+		function CatChange(change_cat){
+			document.getElementById(category).style.backgroundColor="blue";
+			document.getElementById(change_cat).style.backgroundColor="skyblue";
+			
+			var elements=document.getElementsByClassName(change_cat);
+			var elements_old=document.getElementsByClassName(category);
+			
+			//表示中のアイテムを非表示に
+			for(var i=0;i<elements_old.length;i++){
+				elements_old[i].style.display="none";
+			}
+			//選択したカテゴリのアイテムを表示
+			for(var i=0;i<elements.length;i++){
+				elements[i].style.display="inline";
+			}
+			
+			category=change_cat;
+		}
+		function ObjClick(click_src){
+			document.getElementById("gen").style.cursor='url("'+click_src+'"),auto';
+			clickImg.src=click_src;
+			//if(!clickImg.src)alert(clickImg);
+		}
+		
+		function CvsXY(e, that){
+			if(!e)e=window.event;
+			var x,y;
+			if (e.targetTouches){
+				x=e.targetTouches[0].pageX-e.target.offsetLeft;
+				y=e.targetTouches[0].pageY-e.target.offsetTop;
+			}else if(that){
+				x=e.pageX-that.offsetLeft;
+				y=e.pageY-that.offsetTop;
+			}
+			//snapがオンの場合
+			if(snap != 0){
+				x=Math.floor(x/snap)*snap;
+				y=Math.floor(y/snap)*snap;
+			}
+			
+			return [x,y];
+		}
+		
+		cvs.onmousemove=function(e){
+			xy=CvsXY(e, this);
+		}
+		cvs.onmouseout=function(e){
+			xy=[-1,-1];
+			Draw();
+		}
+		cvs.onclick=function(e){
+			if(!clickImg.src)return;
+			
+			var clickXY=CvsXY(e, this);
+			clickImg.top=clickXY[1];
+			clickImg.left=clickXY[0];
+			layObj_old[lay_no]=layObj[lay_no].concat();
+			layObj[lay_no].push(clickImg);
+			clickImg=new Image();
+			document.getElementById("gen").style.cursor="default";
+			
+		}
+		function DefSet(def_src){
+			//景色と壁をセット
+			//背景
+			layObj[0]=[];
+			layObj[0][0]=new Image;
+			layObj[0][0].src=def_src;
+			layObj[0][0].top=0;
+			layObj[0][0].left=0;
+			//壁
+			LayChange(0);
+		}
+		function BgSet(bg_src,bg_lay){
+			layObj[bg_lay]=[];
+			layObj[bg_lay][0]=new Image;
+			layObj[bg_lay][0].src=bg_src;
+			layObj[bg_lay][0].top=0;
+			layObj[bg_lay][0].left=0;
+			LayChange(bg_lay);
+		}
+		function ClearLay(){
+			layObj_old[lay_no]=layObj[lay_no].concat();
+			layObj[lay_no]=[];
+			Draw();
+		}
+		function RestoreLay(){
+			layObj[lay_no]=layObj_old[lay_no].concat();
+			Draw();
+		}
+		
+		function AddImage(){
+			//画像読込
+			var datafile=document.getElementById("selectImg").files;
+			var reader=new FileReader();
+			reader.readAsDataURL(datafile[0]);
+			reader.onload=function(evt){
+			//	var MName=document.getElementById("selectImg").files[0].name;
+				var addImg=new Image();
+				addImg.src=reader.result;
+				addImg.onload=function(){
+					//リストに素材表示
+					document.getElementById("addImg").innerHTML+=
+					"<img src='"+addImg.src+"' onclick=ObjClick('"+addImg.src+"')>";
+					CatChange("add");
+				}
+			}
+		}
+		function GenerateImg(){
+			//アンカータグを作成
+			var a = document.createElement('a');
+			//グリッドとデフォルトOBJ表示を一瞬消す
+			var grid_old=grid;
+			var objOnOff_old=objOnOff;
+			var fcs_old=focus;
+			grid=0;
+			objOnOff=0;
+			focus=0;
+			Draw();
+			
+			//canvasをpng変換し、そのBase64文字列をhrefへセット
+			a.href = cvs.toDataURL('image/png', 0.85);//0.85って何だ？
+			
+			grid=grid_old;
+			objOnOff=objOnOff_old;
+			focus=fcs_old;
+			Draw();
+			
+			//ダウンロード時のファイル名を指定
+			a.download = 'download.png';
+			//クリックイベントを発生させる
+			a.click();
+		}
+		
+		function UpDate(){
+			
+			//cursorが範囲外の時は呼ばない
+			if(xy[0] != -1 || xy[1] != -1)Draw();
+			setTimeout(UpDate,Math.floor(1000/bps));
+		}
+		function Draw(){
+			ctx.clearRect(0,0,cvs.width,cvs.height);
+			if(focus==0)ctx.globalAlpha=1.0;
+			
+			for(var i=0;i<layObj.length;i++){
+				if(i==lay_no)ctx.globalAlpha=1.0;
+				else if(i!=lay_no && focus==1)ctx.globalAlpha=0.5;
+				
+				for(var j=0;j<layObj[i].length;j++){
+					ctx.drawImage(layObj[i][j],layObj[i][j].left,layObj[i][j].top);
+				}
+				if(clickImg.src && i == lay_no){
+					ctx.globalAlpha=1.0;
+					if(xy[0] != -1 || xy[1] != -1)ctx.drawImage(clickImg,xy[0],xy[1]);
+				}
+			}
+			//default obj
+			if(objOnOff==1){
+				ctx.beginPath();
+				
+				ctx.fillStyle = "rgba("+[0,0,255,0.3]+")";
+				ctx.fillRect(32,32,32,32);
+				ctx.fillRect(64,96,96,32);
+				
+				ctx.closePath();
+				ctx.stroke();
+			}
+			
+			//grid
+			if(grid != 0){
+				var cnt=Math.floor(224/grid);
+				ctx.beginPath();
+				for(var i=0;i<cnt;i++){
+					//縦
+					ctx.moveTo(grid*i,0);
+					ctx.lineTo(grid*i,224);
+					//横
+					ctx.moveTo(0,grid*i);
+					ctx.lineTo(224,grid*i);
+				}
+				ctx.closePath();
+				ctx.stroke();
+			}
+		}
+		
+		UpDate();
+	
+	</script>
+	
+</body>
+	
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
